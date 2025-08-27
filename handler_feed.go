@@ -9,7 +9,7 @@ import (
 	"github.com/jacobdanielrose/Gator/internal/database"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %s <name> <url>", cmd.Name)
 	}
@@ -17,18 +17,13 @@ func handlerAddFeed(s *state, cmd command) error {
 	name := cmd.Args[0]
 	url := cmd.Args[1]
 
-	currentUser, err := s.db.GetUserByName(context.Background(), s.cfg.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
 	argsFeed := database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 		Name:      name,
 		Url:       url,
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 	}
 
 	feed, err := s.db.CreateFeed(context.Background(), argsFeed)
@@ -40,7 +35,7 @@ func handlerAddFeed(s *state, cmd command) error {
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 		FeedID:    feed.ID,
 	}
 	_, err = s.db.CreateFeedFollow(context.Background(), argsFeedFollow)
@@ -49,7 +44,7 @@ func handlerAddFeed(s *state, cmd command) error {
 	}
 
 	fmt.Println("Feed created successfully:")
-	printFeed(feed, currentUser)
+	printFeed(feed, user)
 	fmt.Println()
 	fmt.Println("=====================================")
 	return nil
