@@ -22,7 +22,7 @@ func handlerAddFeed(s *state, cmd command) error {
 		return err
 	}
 
-	args := database.CreateFeedParams{
+	argsFeed := database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
@@ -31,9 +31,21 @@ func handlerAddFeed(s *state, cmd command) error {
 		UserID:    currentUser.ID,
 	}
 
-	feed, err := s.db.CreateFeed(context.Background(), args)
+	feed, err := s.db.CreateFeed(context.Background(), argsFeed)
 	if err != nil {
 		return fmt.Errorf("couldn't created feed: %w", err)
+	}
+
+	argsFeedFollow := database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
+		UserID:    currentUser.ID,
+		FeedID:    feed.ID,
+	}
+	_, err = s.db.CreateFeedFollow(context.Background(), argsFeedFollow)
+	if err != nil {
+		return fmt.Errorf("couldn't create feed follow: %w", err)
 	}
 
 	fmt.Println("Feed created successfully:")
@@ -41,16 +53,6 @@ func handlerAddFeed(s *state, cmd command) error {
 	fmt.Println()
 	fmt.Println("=====================================")
 	return nil
-}
-
-func printFeed(feed database.Feed, user database.User) {
-	fmt.Printf("* ID:            %s\n", feed.ID)
-	fmt.Printf("* Created:       %v\n", feed.CreatedAt)
-	fmt.Printf("* Updated:       %v\n", feed.UpdatedAt)
-	fmt.Printf("* Name:          %s\n", feed.Name)
-	fmt.Printf("* URL:           %s\n", feed.Url)
-	fmt.Printf("* UserID:        %v\n", feed.UserID)
-	fmt.Printf("* Created By: %s\n", user.Name)
 }
 
 func handlerGetFeeds(s *state, cmd command) error {
@@ -75,4 +77,14 @@ func handlerGetFeeds(s *state, cmd command) error {
 	}
 
 	return nil
+}
+
+func printFeed(feed database.Feed, user database.User) {
+	fmt.Printf("* ID:            %s\n", feed.ID)
+	fmt.Printf("* Created:       %v\n", feed.CreatedAt)
+	fmt.Printf("* Updated:       %v\n", feed.UpdatedAt)
+	fmt.Printf("* Name:          %s\n", feed.Name)
+	fmt.Printf("* URL:           %s\n", feed.Url)
+	fmt.Printf("* UserID:        %v\n", feed.UserID)
+	fmt.Printf("* Created By: %s\n", user.Name)
 }
