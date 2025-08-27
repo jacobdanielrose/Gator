@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
@@ -21,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error reading config :%v", err)
 	}
-	fmt.Printf("Read config: %+v\n", cfg)
+	//fmt.Printf("Read config: %+v\n", cfg)
 
 	DB, err := sql.Open("postgres", cfg.DBURL)
 	dbQueries := database.New(DB)
@@ -40,6 +39,7 @@ func main() {
 	cmds.register("users", handlerGetUsers)
 	cmds.register("agg", handlerAgg)
 	cmds.register("addfeed", handlerAddFeed)
+	cmds.register("feeds", handlerGetFeeds)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Usage: cli <command> [args...]")
