@@ -22,7 +22,7 @@ func main() {
 	}
 	//fmt.Printf("Read config: %+v\n", cfg)
 
-	DB, err := sql.Open("postgres", cfg.DBURL)
+	DB, _ := sql.Open("postgres", cfg.DBURL)
 	dbQueries := database.New(DB)
 
 	programState := state{
