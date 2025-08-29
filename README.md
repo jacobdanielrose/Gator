@@ -6,12 +6,10 @@ A CLI-based RSS feed aggregator built with Go, PostgreSQL, Goose, and SQLC.
 
 - [Go](https://golang.org/doc/install)
 - [PostgreSQL](https://www.postgresql.org/download/)
-- [Goose](https://github.com/pressly/goose)
-- [SQLC](https://docs.sqlc.dev/en/latest/overview/install.html)
 
 ## Installation
 
-### 1. Install PostgreSQL
+### Install PostgreSQL
 
 **macOS (Homebrew):**
 ```sh
@@ -26,19 +24,14 @@ sudo apt install postgresql postgresql-contrib
 sudo service postgresql start
 ```
 
-### 2. Install Goose
-
-```sh
-go install github.com/pressly/goose/v3/cmd/goose@latest
-```
-
-### 3. Install SQLC
-
-```sh
-go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-```
-
 Make sure `$GOPATH/bin` is in your `PATH`.
+
+
+### Install Gator
+
+```sh
+go install github.com/jacobdanielrose/Gator
+```
 
 ## Configuration
 
@@ -65,36 +58,19 @@ Create a `.gatorconfig.json` file in your project root:
 
 ```json
 {
-    "database_url": "postgres://user:password@localhost:5432/dbname?sslmode=disable"
+    "db_url": "postgres://user:password@localhost:5432/dbname?sslmode=disable"
 }
 ```
 
 - Make sure not to forget the `?sslmode=disable`.
 - Replace `user`, `password`, and `dbname` with your PostgreSQL credentials.
 
-## Build
-
-- Use Goose for database migrations:
-    ```sh
-    goose -dir sql/schema postgres "$DATABASE_URL" up
-    ```
-- Use SQLC to generate Go code from SQL:
-    ```sh
-    sqlc generate
-    ```
-- Compile the CLI binary:
-    ```sh
-    go build -o gator
-    ```
-  This will create an executable named `gator` in your project directory.
-
-
 ## Usage
 
 After building and putting the binary in your `$PATH`, you can run the CLI with:
 
 ```sh
-gator <command> [args]
+Gator <command> [args]
 ```
 
 ### Commands
@@ -104,7 +80,7 @@ gator <command> [args]
 Add a new user to your DB.
 
 ```sh
-gator register <username>
+Gator register <username>
 ```
 
 #### `login`
@@ -112,7 +88,7 @@ gator register <username>
 Login as the specified user.
 
 ```sh
-gator login <username>
+Gator login <username>
 ```
 
 #### `users`
@@ -120,7 +96,7 @@ gator login <username>
 List all registered users.
 
 ```sh
-gator users 
+Gator users
 ```
 
 #### `addfeed`
@@ -128,7 +104,7 @@ gator users
 Add a new RSS feed to your subscriptions.
 
 ```sh
-gator addfeed <feed-url>
+Gator addfeed <feed-url>
 ```
 - `<feed-url>`: The URL of the RSS feed you want to subscribe to.
 
@@ -137,7 +113,7 @@ gator addfeed <feed-url>
 Fetch and store new items from all subscribed feeds.
 
 ```sh
-gator agg
+Gator agg
 ```
 Downloads the latest posts from all feeds and saves them to the database.
 
@@ -146,7 +122,7 @@ Downloads the latest posts from all feeds and saves them to the database.
 List all your subscribed-to RSS feeds.
 
 ```sh
-gator feeds
+Gator feeds
 ```
 Displays a table of all feeds you have added.
 
@@ -155,7 +131,7 @@ Displays a table of all feeds you have added.
 Follow a specific RSS Feed that has alread been added
 
 ```sh
-gator follow <feed-url>
+Gator follow <feed-url>
 ```
 - `<feed-url>`: The URL of the feed to remove (as shown in `feeds`).
 
@@ -164,7 +140,7 @@ gator follow <feed-url>
 List posts from your subscribed-to feeds.
 
 ```sh
-gator browse <limit>
+Gator browse <limit>
 ```
 - `--feed <limit>`: The number of posts to be shown (default is 2).
 
@@ -173,14 +149,14 @@ gator browse <limit>
 Lists the feeds that your user is subscribed to.
 
 ```sh
-gator following <
+Gator following <
 ```
 
 #### `unfollow`
 
-Unsubscribe from a particular RSS feed. 
+Unsubscribe from a particular RSS feed.
 
 ```sh
-gator unfollow <url>
+Gator unfollow <url>
 ```
 - `--feed <url>`: The url of the feed you want to unsubscribe to.
